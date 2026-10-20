@@ -1,8 +1,8 @@
 const blogConfig = {
-  title: 'Javier / Tech Notes',
-  author: 'Javier',
+  title: 'Javier Galicia / Tech & Personal Notes',
+  author: 'Javier Galicia',
   description: 'Tecnología empresarial, inteligencia artificial, cloud y JavaScript, explicados desde la práctica.',
-  githubUrl: '',
+  githubUrl: 'https://javier-galicia.github.io/',
 }
 
 export default blogConfig

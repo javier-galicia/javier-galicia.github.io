@@ -55,9 +55,9 @@ function App() {
           <div className="relative z-[1]">
             <p className="flex items-center gap-[9px] font-mono text-[10px] tracking-[1.3px] text-[#2563eb] dark:text-[#60a5fa]"><span className="size-1.5 rounded-full bg-[#06b6d4]" /> TECNOLOGÍA · NEGOCIO · INNOVACIÓN</p>
             <h1 id="intro-title" className="my-[23px] text-[clamp(43px,11vw,59px)] leading-[1.06] tracking-[-2.7px] font-serif font-medium sm:text-[clamp(42px,5.2vw,64px)]">
-              Ideas para<br />construir lo que <em className="text-[#2563eb] dark:text-[#60a5fa]">sigue.</em>
+              Notas prácticas para<br />desarrollar lo que <em className="text-[#2563eb] dark:text-[#60a5fa]">viene.</em>
             </h1>
-            <p className="max-w-[415px] text-sm leading-[1.8] text-[#64748b]">
+            <p className="max-w-[415px] leading-[1.8] text-[#64748b] text-base font-medium font-stretch-condensed">
               IA, cloud y JavaScript al servicio de empresas que quieren avanzar. Ideas prácticas
               para convertir tecnología en impacto.
             </p>
