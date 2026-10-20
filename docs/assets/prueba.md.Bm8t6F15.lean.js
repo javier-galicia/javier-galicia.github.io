@@ -1,1 +1,0 @@
-import{G as e,W as t,n,rt as r}from"./chunks/framework.QgyKGvZq.js";var i=JSON.parse(`{"title":"My Title","description":"","frontmatter":{},"headers":[],"relativePath":"prueba.md","filePath":"prueba.md"}`),a={name:`prueba.md`};function o(n,i,a,o,s,c){return r(),t(`div`,null,[...i[0]||=[e("",8)]])}var s=n(a,[[`render`,o]]);export{i as __pageData,s as default};

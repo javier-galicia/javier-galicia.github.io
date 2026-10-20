@@ -1,75 +1,36 @@
-# React + TypeScript + Vite
+# Javier / Tech Notes
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Blog de tecnología empresarial, inteligencia artificial, cloud y JavaScript. El sitio usa React para la portada y archivos Markdown como fuente de los artículos. Durante `pnpm build`, Vite crea una página HTML estática por cada archivo en `posts/`.
 
-Currently, two official plugins are available:
+## Escribir una publicación
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+Crea un archivo `.md` dentro de `posts/`. El nombre del archivo se convierte en la URL: `mi-publicacion.md` genera `/posts/mi-publicacion/`.
 
-## React Compiler
+```md
+---
+title: Título de la publicación
+date: 2026-10-19
+description: Una breve descripción para la portada y los buscadores.
+tags:
+  - cloud
+  - JavaScript
+---
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-
+El contenido se escribe en Markdown.
 ```
 
-You can also install [eslint-plugin-react-x](https://npmx.dev/package/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://npmx.dev/package/eslint-plugin-react-dom) for React-specific lint rules:
+`title` es obligatorio. `date`, `description` y `tags` son opcionales; si no escribes una descripción, se genera a partir del primer texto del post. Para guardar un borrador que no se publique, agrega `draft: true` al frontmatter.
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+Las imágenes pueden guardarse en `public/` y enlazarse desde Markdown, por ejemplo `![Descripción](/images/foto.jpg)`.
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## Configurar el sitio
 
-```
+Edita `blog.config.ts` para cambiar el título, el nombre del autor, la descripción y el enlace de GitHub.
+
+La interfaz de React usa Tailwind CSS 4. Los estilos de tipografía Markdown y los estilos base están en `src/index.css`; Vite incluye esa misma hoja de estilos en las páginas estáticas de cada publicación.
+
+## Desarrollo y publicación
+
+- `pnpm dev`: inicia el sitio localmente; los enlaces a publicaciones también funcionan durante el desarrollo.
+- `pnpm build`: genera `dist/index.html` y una página HTML independiente en `dist/posts/<slug>/index.html` para cada publicación publicada.
+- `pnpm preview`: sirve la salida estática localmente para revisar el resultado.
