@@ -29,6 +29,20 @@ Edita `blog.config.ts` para cambiar el título, el nombre del autor, la descripc
 
 La interfaz de React usa Tailwind CSS 4. Los estilos de tipografía Markdown y los estilos base están en `src/index.css`; Vite incluye esa misma hoja de estilos en las páginas estáticas de cada publicación.
 
+## Layouts y templates
+
+- `src/layouts/SiteLayout.tsx` es el layout reutilizable de las páginas React: contiene la navegación, el selector de tema y el pie de página. La homepage se compone dentro de este layout.
+- `src/layouts/staticHomeTemplate.ts` genera el HTML inicial indexable de la homepage.
+- `src/layouts/staticPostTemplate.ts` genera cada artículo estático, incluyendo sus metadatos SEO y el mismo encabezado visual.
+
+Los posts siguen siendo HTML estático para que los buscadores puedan leerlos sin ejecutar React. Al cambiar la estructura visual compartida, actualiza `SiteLayout.tsx` y la plantilla de posts para mantener ambos formatos alineados.
+
+## SEO y publicación en un dominio
+
+La portada se genera con HTML inicial rastreable que incluye enlaces a los artículos, título, descripción, etiquetas Open Graph/Twitter y datos estructurados JSON-LD. También se genera `robots.txt`.
+
+Cuando tengas un dominio público, configura `siteUrl` en `blog.config.ts` (por ejemplo, `https://mi-dominio.com`). Con esa URL el build añade URLs canónicas, datos estructurados con enlaces absolutos y `sitemap.xml`; `robots.txt` anunciará el sitemap automáticamente. Publica el contenido de `dist/` en ese dominio y registra el sitemap en Google Search Console o Bing Webmaster Tools.
+
 ## Desarrollo y publicación
 
 - `pnpm dev`: inicia el sitio localmente; los enlaces a publicaciones también funcionan durante el desarrollo.

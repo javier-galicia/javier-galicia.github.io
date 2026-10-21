@@ -6,6 +6,8 @@ import react from '@vitejs/plugin-react'
 import { defineConfig, type Plugin, type ResolvedConfig } from 'vite'
 import blogConfig from './blog.config.ts'
 import tailwindcss from '@tailwindcss/vite'
+import { renderStaticPostTemplate } from './src/layouts/staticPostTemplate.ts'
+import { renderStaticHomeTemplate } from './src/layouts/staticHomeTemplate.ts'
 
 const virtualModuleId = 'virtual:blog-posts'
 const resolvedVirtualModuleId = `\0${virtualModuleId}`
@@ -141,70 +143,95 @@ function readPosts(postsDirectory: string): BlogPost[] {
   return posts.sort((a, b) => b.date.localeCompare(a.date) || a.slug.localeCompare(b.slug))
 }
 
-function formatDate(date: string) {
-  return new Intl.DateTimeFormat('es', {
-    dateStyle: 'long',
-    timeZone: 'UTC',
-  }).format(new Date(`${date}T00:00:00Z`))
+function getSiteUrl() {
+  if (!blogConfig.siteUrl) return ''
+
+  let url: URL
+  try {
+    url = new URL(blogConfig.siteUrl)
+  } catch {
+    throw new Error('Set "siteUrl" in blog.config.ts to a valid public URL.')
+  }
+
+  if (!['http:', 'https:'].includes(url.protocol)) {
+    throw new Error('"siteUrl" in blog.config.ts must use HTTP or HTTPS.')
+  }
+
+  return url.toString().replace(/\/$/, '')
 }
 
-function renderPostPage(post: BlogPost, cssHrefs: string[], homeHref: string) {
-  const postDate = post.date
-    ? `<time datetime="${escapeHtml(post.date)}">${escapeHtml(formatDate(post.date))}</time><span class="meta-dot">·</span>`
-    : ''
-  const tags = post.tags.map((tag) => `<span class="rounded-[3px] bg-[#eff6ff] px-[9px] py-[5px] font-mono text-[9px] text-[#2563eb]">${escapeHtml(tag)}</span>`).join('')
-  const styles = cssHrefs.map((href) => `<link rel="stylesheet" href="${escapeHtml(href)}">`).join('\n    ')
-  const description = post.description || blogConfig.description
-  const gitHubLink = blogConfig.githubUrl
-    ? `<a class="hidden text-inherit no-underline transition-colors hover:text-[#2563eb] sm:inline" href="${escapeHtml(blogConfig.githubUrl)}" target="_blank" rel="noreferrer">GitHub ↗</a>`
-    : ''
+function getCanonicalUrl(siteUrl: string, pathname: string) {
+  return siteUrl ? new URL(pathname, `${siteUrl}/`).toString() : ''
+}
 
-  return `<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="${escapeHtml(description)}">
-    <meta name="theme-color" content="#f5f8fc">
-    <title>${escapeHtml(post.title)} — ${escapeHtml(blogConfig.title)}</title>
-    ${styles}
-  </head>
-  <body>
-    <div class="mx-auto min-h-screen w-[calc(100%-36px)] max-w-[1120px] bg-[#f5f8fc] text-[#172033] sm:w-[calc(100%-72px)]">
-      <header class="relative z-10 flex h-[70px] items-center justify-between border-b border-[#dbe4ef] sm:h-[84px]">
-        <a class="inline-flex items-center gap-2.5 text-[15px] font-semibold tracking-[-0.4px] text-inherit no-underline" href="${escapeHtml(homeHref)}"><span class="grid size-8 place-items-center rounded-lg bg-[#172033] font-mono text-[11px] font-bold tracking-[-1px] text-white">JS</span><span>${escapeHtml(blogConfig.title)}</span></a>
-        <nav class="ml-auto mr-3 flex h-full items-center gap-3.5 text-[10px] text-[#64748b] sm:mr-[30px] sm:gap-[34px] sm:text-xs" aria-label="Navegación principal">
-          <a class="relative flex h-full items-center text-[#172033] no-underline after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-[#2563eb]" href="${escapeHtml(homeHref)}#publicaciones">Blog</a>
-          ${gitHubLink}
-        </nav>
-      </header>
-      <main class="mx-auto w-full max-w-[700px] px-0 py-10 sm:px-5 sm:py-[60px]">
-        <a class="text-xs text-[#2563eb] no-underline" href="${escapeHtml(homeHref)}">← Todos los artículos</a>
-        <article>
-          <header class="border-b border-[#dbe4ef] py-[34px]">
-            <div class="mb-[14px] flex flex-wrap items-center gap-[9px] font-mono text-[10px] text-[#64748b]">${postDate}<span>${post.readingTime} min de lectura</span></div>
-            <h1 class="m-0 font-serif text-[clamp(36px,6vw,52px)] font-medium leading-[1.13] tracking-[-1.4px]">${escapeHtml(post.title)}</h1>
-            ${description ? `<p class="mt-[14px] max-w-[570px] text-[15px] leading-[1.75] text-[#64748b]">${escapeHtml(description)}</p>` : ''}
-            ${tags ? `<div class="mt-[18px] flex flex-wrap gap-[7px]">${tags}</div>` : ''}
-          </header>
-          <div class="prose pt-[30px]">${post.html}</div>
-        </article>
-        <footer class="mt-[45px] border-t border-[#dbe4ef] pt-[18px] text-[11px] text-[#64748b]">Escrito por ${escapeHtml(blogConfig.author)} · <a class="text-[#2563eb]" href="${escapeHtml(homeHref)}">${escapeHtml(blogConfig.title)}</a></footer>
-      </main>
-    </div>
-  </body>
-</html>`
+function renderSeoHead(posts: BlogPost[], base: string, siteUrl: string) {
+  const title = `${blogConfig.title} — Tecnología, IA, cloud y JavaScript`
+  const canonicalUrl = getCanonicalUrl(siteUrl, base)
+  const meta = [
+    `<meta name="description" content="${escapeHtml(blogConfig.description)}">`,
+    '<meta name="robots" content="index, follow, max-image-preview:large">',
+    `<meta property="og:site_name" content="${escapeHtml(blogConfig.title)}">`,
+    `<meta property="og:title" content="${escapeHtml(title)}">`,
+    `<meta property="og:description" content="${escapeHtml(blogConfig.description)}">`,
+    '<meta property="og:type" content="website">',
+    '<meta name="twitter:card" content="summary">',
+    `<meta name="twitter:title" content="${escapeHtml(title)}">`,
+    `<meta name="twitter:description" content="${escapeHtml(blogConfig.description)}">`,
+    canonicalUrl ? `<link rel="canonical" href="${escapeHtml(canonicalUrl)}">` : '',
+    canonicalUrl ? `<meta property="og:url" content="${escapeHtml(canonicalUrl)}">` : '',
+  ].filter(Boolean).join('\n    ')
+  const structuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'Blog',
+    name: blogConfig.title,
+    description: blogConfig.description,
+    ...(canonicalUrl ? { url: canonicalUrl } : {}),
+    inLanguage: 'es',
+    author: {
+      '@type': 'Person',
+      name: blogConfig.author,
+    },
+    blogPost: posts.map((post) => ({
+      '@type': 'BlogPosting',
+      headline: post.title,
+      description: post.description,
+      ...(siteUrl ? { url: getCanonicalUrl(siteUrl, `${base}posts/${post.slug}/`) } : {}),
+      ...(post.date ? { datePublished: post.date } : {}),
+      author: {
+        '@type': 'Person',
+        name: blogConfig.author,
+      },
+    })),
+  }
+  const jsonLd = `<script type="application/ld+json">${JSON.stringify(structuredData).replace(/</g, '\\u003c')}</script>`
+
+  return `<title>${escapeHtml(title)}</title>\n    ${meta}\n    ${jsonLd}`
 }
 
 function blogPlugin(): Plugin {
   let config: ResolvedConfig
   let postsDirectory = ''
+  let siteUrl = ''
 
   return {
     name: 'personal-blog-static-posts',
     configResolved(resolvedConfig) {
       config = resolvedConfig
       postsDirectory = resolve(config.root, 'posts')
+      siteUrl = getSiteUrl()
+    },
+    transformIndexHtml: {
+      order: 'post',
+      handler(html) {
+        const base = config.base.endsWith('/') ? config.base : `${config.base}/`
+        const posts = readPosts(postsDirectory)
+        const seoHead = renderSeoHead(posts, base, siteUrl)
+        const fallback = renderStaticHomeTemplate(posts, base)
+
+        return html
+          .replace(/<title>[\s\S]*?<\/title>/, seoHead)
+          .replace('<div id="root"></div>', fallback)
+      },
     },
     resolveId(id) {
       if (id === virtualModuleId) return resolvedVirtualModuleId
@@ -232,10 +259,11 @@ function blogPlugin(): Plugin {
         }
 
         const base = config.base.endsWith('/') ? config.base : `${config.base}/`
-        const page = renderPostPage(
+        const page = renderStaticPostTemplate(
           post,
           [`${base}src/index.css`],
           base,
+          siteUrl,
         )
         response.statusCode = 200
         response.setHeader('Content-Type', 'text/html; charset=utf-8')
@@ -265,11 +293,37 @@ function blogPlugin(): Plugin {
         throw new Error('Could not find the generated CSS bundle for static blog posts.')
       }
 
+      const base = config.base.endsWith('/') ? config.base : `${config.base}/`
+      const homeUrl = getCanonicalUrl(siteUrl, base)
+      const sitemap = siteUrl
+        ? [
+            { url: homeUrl, date: '' },
+            ...posts.map((post) => ({
+              url: getCanonicalUrl(siteUrl, `${base}posts/${post.slug}/`),
+              date: post.date,
+            })),
+          ].map(({ url, date }) => `  <url><loc>${escapeHtml(url)}</loc>${date ? `<lastmod>${escapeHtml(date)}</lastmod>` : ''}</url>`).join('\n')
+        : ''
+
+      this.emitFile({
+        type: 'asset',
+        fileName: 'robots.txt',
+        source: `User-agent: *\nAllow: /\n${siteUrl ? `Sitemap: ${getCanonicalUrl(siteUrl, `${base}sitemap.xml`)}\n` : ''}`,
+      })
+
+      if (siteUrl) {
+        this.emitFile({
+          type: 'asset',
+          fileName: 'sitemap.xml',
+          source: `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${sitemap}\n</urlset>\n`,
+        })
+      }
+
       for (const post of posts) {
         this.emitFile({
           type: 'asset',
           fileName: `posts/${post.slug}/index.html`,
-          source: renderPostPage(post, cssHrefs, homeHref),
+          source: renderStaticPostTemplate(post, cssHrefs, homeHref, siteUrl),
         })
       }
     },
