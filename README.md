@@ -1,4 +1,4 @@
-# Javier / Tech Notes
+# Javier Galicia / Tech & Personal Notes
 
 Blog de tecnología empresarial, inteligencia artificial, cloud y JavaScript. El sitio usa React para la portada y archivos Markdown como fuente de los artículos. Durante `pnpm build`, Vite crea una página HTML estática por cada archivo en `posts/`.
 
@@ -36,6 +36,20 @@ La interfaz de React usa Tailwind CSS 4. Los estilos de tipografía Markdown y l
 - `src/layouts/staticPostTemplate.ts` genera cada artículo estático, incluyendo sus metadatos SEO y el mismo encabezado visual.
 
 Los posts siguen siendo HTML estático para que los buscadores puedan leerlos sin ejecutar React. Al cambiar la estructura visual compartida, actualiza `SiteLayout.tsx` y la plantilla de posts para mantener ambos formatos alineados.
+
+## Pedir un diseño diferente
+
+Puedes copiar este prompt y completar las partes entre corchetes para solicitar un rediseño del blog a la IA:
+
+```text
+Rediseña la apariencia de mi blog personal con una estética [describe el estilo: editorial, minimalista, retro, corporativa, etc.].
+
+Quiero que transmita [sensación o personalidad] y que use una paleta basada en [colores]. Da prioridad a [elementos: legibilidad, imágenes, navegación, tarjetas, tipografía, etc.].
+
+Adapta la portada y las páginas de los artículos para que se sientan parte del mismo sitio. Mantén el diseño responsive y accesible, el modo claro/oscuro, los filtros y la búsqueda de artículos, y la generación de páginas estáticas desde los archivos Markdown.
+
+Implementa los cambios en el proyecto existente. Conserva la configuración SEO, los enlaces y el comportamiento actual; actualiza las plantillas estáticas para que coincidan con React. Al terminar, ejecuta `pnpm build` y `pnpm lint` y corrige cualquier error.
+```
 
 ## SEO y publicación en un dominio
 
