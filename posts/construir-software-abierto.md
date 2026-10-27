@@ -15,7 +15,7 @@ tags:
   - soluciones
 ---
  
-# Una estrategia para impulsar la innovación empresarial
+## Una estrategia para impulsar la innovación empresarial
 
 Creemos que la innovación tecnológica no debería comenzar siempre desde cero. En un entorno donde las empresas necesitan adaptarse, automatizar procesos y aprovechar la inteligencia artificial, el software open source representa una oportunidad para construir soluciones con mayor flexibilidad, colaboración y acceso al conocimiento.
 
