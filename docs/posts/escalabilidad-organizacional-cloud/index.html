@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="De Docker a Cloud, una analogía entre la arquitectura tecnológica y la administración empresarial para comprender cómo estandarizar conocimientos, coordinar capacidades y construir organizaciones más flexibles y escalables.">
+    <meta name="robots" content="index, follow, max-image-preview:large">
+    <meta name="theme-color" content="#f5f8fc">
+    <title>Escalabilidad organizacional - de Docker a OpenShift y Cloud — Javier Galicia / Tech &amp; Personal Notes</title>
+    <link rel="canonical" href="https://javier-galicia.github.io/posts/escalabilidad-organizacional-cloud/">
+    <meta property="og:url" content="https://javier-galicia.github.io/posts/escalabilidad-organizacional-cloud/">
+    <meta property="og:site_name" content="Javier Galicia / Tech &amp; Personal Notes">
+    <meta property="og:title" content="Escalabilidad organizacional - de Docker a OpenShift y Cloud">
+    <meta property="og:description" content="De Docker a Cloud, una analogía entre la arquitectura tecnológica y la administración empresarial para comprender cómo estandarizar conocimientos, coordinar capacidades y construir organizaciones más flexibles y escalables.">
+    <meta property="og:type" content="article">
+    <meta name="twitter:card" content="summary">
+    <script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","headline":"Escalabilidad organizacional - de Docker a OpenShift y Cloud","description":"De Docker a Cloud, una analogía entre la arquitectura tecnológica y la administración empresarial para comprender cómo estandarizar conocimientos, coordinar capacidades y construir organizaciones más flexibles y escalables.","inLanguage":"es","url":"https://javier-galicia.github.io/posts/escalabilidad-organizacional-cloud/","datePublished":"2026-11-16","author":{"@type":"Person","name":"Javier Galicia"},"isPartOf":{"@type":"Blog","name":"Javier Galicia / Tech & Personal Notes","url":"https://javier-galicia.github.io/"}}</script>
+    <script>if (localStorage.getItem('blog-theme') === 'dark') document.documentElement.classList.add('dark')</script>
+    <link rel="stylesheet" href="/assets/index-BTHZxd_6.css">
+  </head>
+  <body>
+    <div class="mx-auto min-h-screen w-[calc(100%-36px)] max-w-[1120px] bg-[#f5f8fc] text-[#172033] dark:bg-[#0b1220] dark:text-[#e2e8f0] sm:w-[calc(100%-72px)]">
+      <header class="relative z-10 flex h-[70px] items-center justify-between border-b border-[#dbe4ef] dark:border-[#263449] sm:h-[84px]">
+        <a class="inline-flex items-center gap-2.5 text-[20px] font-semibold tracking-[-0.4px] text-inherit no-underline" href="/"><span class="grid size-8 place-items-center rounded-lg bg-[#172033] font-mono text-[11px] font-bold tracking-[-1px] text-white dark:bg-[#2563eb]">JS</span><span>Javier Galicia / Tech &amp; Personal Notes</span></a>
+        <nav class="ml-auto mr-3 flex h-full items-center gap-3.5 text-md text-[#64748b] dark:text-[#94a3b8] sm:mr-[18px] sm:gap-[24px]" aria-label="Navegación principal">
+          <a class="relative flex h-full items-center text-[#172033] no-underline after:absolute after:inset-x-0 after:-bottom-px after:h-0.5 after:bg-[#2563eb] dark:text-[#f8fafc] dark:after:bg-[#60a5fa]" href="/#publicaciones">Blog</a>
+          <a class="hidden text-inherit no-underline transition-colors hover:text-[#2563eb] sm:inline" href="https://github.com/javier-galicia/javier-galicia.github.io" target="_blank" rel="noreferrer">GitHub ↗</a>
+        </nav>
+        <button class="grid size-[30px] shrink-0 place-items-center rounded-full border border-[#dbe4ef] bg-white text-[17px] text-[#172033] transition hover:border-[#2563eb] dark:border-[#263449] dark:bg-[#111c2e] dark:text-[#e2e8f0] dark:hover:border-[#60a5fa] sm:size-[34px]" type="button" aria-label="Cambiar a tema oscuro" data-theme-toggle>◐</button>
+      </header>
+      <main class="mx-auto w-full max-w-[700px] px-0 py-10 sm:px-5 sm:py-[60px]">
+        <a class="text-md text-[#2563eb] no-underline dark:text-[#60a5fa]" href="/">← Todos los artículos</a>
+        <article>
+          <header class="border-b border-[#dbe4ef] py-[34px] dark:border-[#263449]">
+            <div class="mb-[14px] flex flex-wrap items-center gap-[9px] font-mono text-[20px] text-[#64748b] dark:text-[#94a3b8]"><time datetime="2026-11-16">16 de noviembre de 2026</time><span class="meta-dot">·</span><span>3 min de lectura</span></div>
+            <h1 class="m-0 font-serif text-[clamp(36px,6vw,52px)] font-medium leading-[1.13] tracking-[-1.4px]">Escalabilidad organizacional - de Docker a OpenShift y Cloud</h1>
+            <p class="mt-[14px] max-w-[570px] text-[20px] leading-[1.75] text-[#64748b] dark:text-[#94a3b8]">De Docker a Cloud, una analogía entre la arquitectura tecnológica y la administración empresarial para comprender cómo estandarizar conocimientos, coordinar capacidades y construir organizaciones más flexibles y escalables.</p>
+            <div class="mt-[18px] flex flex-wrap gap-[7px]"><span class="rounded-[3px] bg-[#eff6ff] px-[9px] py-[5px] font-mono text-[9px] text-[#2563eb] dark:bg-[#1e293b] dark:text-[#93c5fd]">inteligencia artificial</span><span class="rounded-[3px] bg-[#eff6ff] px-[9px] py-[5px] font-mono text-[9px] text-[#2563eb] dark:bg-[#1e293b] dark:text-[#93c5fd]">negocio</span><span class="rounded-[3px] bg-[#eff6ff] px-[9px] py-[5px] font-mono text-[9px] text-[#2563eb] dark:bg-[#1e293b] dark:text-[#93c5fd]">innovación</span><span class="rounded-[3px] bg-[#eff6ff] px-[9px] py-[5px] font-mono text-[9px] text-[#2563eb] dark:bg-[#1e293b] dark:text-[#93c5fd]">empresa</span><span class="rounded-[3px] bg-[#eff6ff] px-[9px] py-[5px] font-mono text-[9px] text-[#2563eb] dark:bg-[#1e293b] dark:text-[#93c5fd]">competencia</span><span class="rounded-[3px] bg-[#eff6ff] px-[9px] py-[5px] font-mono text-[9px] text-[#2563eb] dark:bg-[#1e293b] dark:text-[#93c5fd]">productividad</span><span class="rounded-[3px] bg-[#eff6ff] px-[9px] py-[5px] font-mono text-[9px] text-[#2563eb] dark:bg-[#1e293b] dark:text-[#93c5fd]">costos</span><span class="rounded-[3px] bg-[#eff6ff] px-[9px] py-[5px] font-mono text-[9px] text-[#2563eb] dark:bg-[#1e293b] dark:text-[#93c5fd]">consultoría</span><span class="rounded-[3px] bg-[#eff6ff] px-[9px] py-[5px] font-mono text-[9px] text-[#2563eb] dark:bg-[#1e293b] dark:text-[#93c5fd]">soluciones</span><span class="rounded-[3px] bg-[#eff6ff] px-[9px] py-[5px] font-mono text-[9px] text-[#2563eb] dark:bg-[#1e293b] dark:text-[#93c5fd]">administración</span><span class="rounded-[3px] bg-[#eff6ff] px-[9px] py-[5px] font-mono text-[9px] text-[#2563eb] dark:bg-[#1e293b] dark:text-[#93c5fd]">finanzas</span><span class="rounded-[3px] bg-[#eff6ff] px-[9px] py-[5px] font-mono text-[9px] text-[#2563eb] dark:bg-[#1e293b] dark:text-[#93c5fd]">desarrollo</span></div>
+          </header>
+          <div class="prose pt-[30px]"><p>El crecimiento empresarial tradicionalmente se ha relacionado con la incorporación de personal, la ampliación de instalaciones y el incremento de recursos operativos. Sin embargo, la evolución tecnológica está cambiando la manera en que entendemos la capacidad de una organización para crecer.</p>
+<p>Tecnologías como Docker, OpenShift y Cloud ofrecen una perspectiva interesante que podemos trasladar al ámbito administrativo: la escalabilidad organizacional.</p>
+<p>Este concepto plantea una pregunta importante: ¿cómo puede una empresa incrementar su capacidad productiva sin depender necesariamente de un crecimiento proporcional de su estructura?</p>
+<h3>Docker: estandarización del conocimiento</h3>
+<p>Docker permite encapsular aplicaciones y sus dependencias para ejecutarlas de manera consistente en diferentes entornos.</p>
+<p>En términos organizacionales, podemos interpretar este modelo como la estandarización de conocimientos, procedimientos y actividades. El objetivo es convertir experiencias individuales en capacidades documentadas, reutilizables y transferibles.</p>
+<p>Una organización no debería depender exclusivamente de las personas que conocen sus procesos, sino desarrollar mecanismos para conservar, reproducir y compartir ese conocimiento.</p>
+<h3>OpenShift: coordinación de capacidades</h3>
+<p>OpenShift permite administrar y orquestar contenedores, distribuir cargas de trabajo y gestionar recursos de manera automatizada.</p>
+<p>Desde una perspectiva administrativa, representa la coordinación de equipos, responsabilidades, procesos y herramientas dentro de una estructura común.</p>
+<p>El desafío ya no consiste únicamente en disponer de personal capacitado, sino en conseguir que las distintas capacidades trabajen de manera integrada, con mecanismos de supervisión, medición y optimización.</p>
+<h3>Cloud: expansión de la capacidad organizacional</h3>
+<p>La computación en la nube permite acceder a infraestructura y recursos bajo demanda, facilitando la expansión de las operaciones sin necesidad de concentrar todos los recursos tecnológicos en una misma ubicación.</p>
+<p>Su equivalente organizacional es la construcción de ecosistemas productivos que integran colaboradores, proveedores, plataformas digitales y agentes de inteligencia artificial.</p>
+<p>Esto permite que una empresa amplíe sus operaciones, incorpore nuevas capacidades y responda a las variaciones del mercado con mayor flexibilidad.</p>
+<h3>Una nueva arquitectura para la administración empresarial</h3>
+<p>Podemos interpretar esta evolución tecnológica mediante tres dimensiones:</p>
+<ul>
+<li><strong>Docker:</strong> estandarizar y reproducir capacidades.</li>
+<li><strong>OpenShift:</strong> coordinar y administrar capacidades.</li>
+<li><strong>Cloud:</strong> expandir e integrar capacidades.</li>
+</ul>
+<p>Esta analogía permite identificar nuevas oportunidades para la administración empresarial: gestión del conocimiento, automatización de procesos, administración de infraestructura digital, integración de inteligencia artificial y diseño de estructuras organizacionales híbridas.</p>
+<p>La escalabilidad organizacional no significa simplemente sustituir actividades humanas por tecnología. Consiste en diseñar estructuras donde las personas puedan concentrarse en actividades de mayor valor, mientras los procesos estandarizados y las herramientas digitales facilitan la continuidad y expansión de las operaciones.</p>
+<p>En este escenario, el administrador empresarial adquiere una nueva función: diseñar y gestionar la arquitectura que conecta personas, procesos, software, infraestructura e inteligencia artificial.</p>
+<p><strong>El crecimiento de una organización no debería medirse únicamente por el número de personas que incorpora, sino también por su capacidad para estandarizar conocimientos, coordinar recursos y expandir su productividad.</strong></p>
+<p>La transformación digital también es una transformación de la manera en que organizamos el trabajo.</p>
+</div>
+        </article>
+        <footer class="mt-[45px] border-t border-[#dbe4ef] pt-[18px] text-[11px] text-[#64748b] dark:border-[#263449] dark:text-[#94a3b8]">Escrito por Javier Galicia · <a class="text-[#2563eb] dark:text-[#60a5fa]" href="/">Javier Galicia / Tech &amp; Personal Notes</a></footer>
+      </main>
+    </div>
+    <script>
+      const themeToggle = document.querySelector('[data-theme-toggle]');
+      const updateThemeButton = () => {
+        const isDark = document.documentElement.classList.contains('dark');
+        themeToggle.textContent = isDark ? '☼' : '◐';
+        themeToggle.setAttribute('aria-label', 'Cambiar a tema ' + (isDark ? 'claro' : 'oscuro'));
+      };
+      updateThemeButton();
+      themeToggle.addEventListener('click', () => {
+        const isDark = document.documentElement.classList.toggle('dark');
+        localStorage.setItem('blog-theme', isDark ? 'dark' : 'light');
+        updateThemeButton();
+      });
+    </script>
+  </body>
+</html>
