@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { posts } from 'virtual:blog-posts'
 import blogConfig from '../blog.config'
 import { SiteLayout } from './layouts/SiteLayout'
@@ -10,10 +10,18 @@ function formatDate(date: string) {
   }).format(new Date(`${date}T00:00:00Z`))
 }
 
+const POSTS_PER_PAGE = 5
+
+function getPageFromUrl() {
+  const value = Number(new URLSearchParams(window.location.search).get('page'))
+  return Number.isInteger(value) && value > 0 ? value : 1
+}
+
 function App() {
   const [query, setQuery] = useState('')
   const [activeTag, setActiveTag] = useState('')
   const [dark, setDark] = useState(() => localStorage.getItem('blog-theme') === 'dark')
+  const [currentPage, setCurrentPage] = useState(getPageFromUrl)
 
   const tags = [...new Set(posts.flatMap((post) => post.tags))]
   const visiblePosts = useMemo(() => {
@@ -28,6 +36,54 @@ function App() {
       return matchesQuery && matchesTag
     })
   }, [activeTag, query])
+
+  const totalPages = Math.max(1, Math.ceil(visiblePosts.length / POSTS_PER_PAGE))
+  const safePage = Math.min(currentPage, totalPages)
+  const paginatedPosts = visiblePosts.slice(
+    (safePage - 1) * POSTS_PER_PAGE,
+    safePage * POSTS_PER_PAGE,
+  )
+
+  useEffect(() => {
+    const handlePopState = () => setCurrentPage(getPageFromUrl())
+    window.addEventListener('popstate', handlePopState)
+    return () => window.removeEventListener('popstate', handlePopState)
+  }, [])
+
+  function changePage(page: number) {
+    const nextPage = Math.min(Math.max(page, 1), totalPages)
+    setCurrentPage(nextPage)
+
+    const url = new URL(window.location.href)
+    if (nextPage === 1) url.searchParams.delete('page')
+    else url.searchParams.set('page', String(nextPage))
+    window.history.pushState({}, '', `${url.pathname}${url.search}${url.hash}`)
+  }
+
+  function changeQuery(value: string) {
+    setQuery(value)
+    setCurrentPage(1)
+    const url = new URL(window.location.href)
+    url.searchParams.delete('page')
+    window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`)
+  }
+
+  function changeTag(tag: string) {
+    setActiveTag(activeTag === tag ? '' : tag)
+    setCurrentPage(1)
+    const url = new URL(window.location.href)
+    url.searchParams.delete('page')
+    window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`)
+  }
+
+  function clearFilters() {
+    setQuery('')
+    setActiveTag('')
+    setCurrentPage(1)
+    const url = new URL(window.location.href)
+    url.searchParams.delete('page')
+    window.history.replaceState({}, '', `${url.pathname}${url.search}${url.hash}`)
+  }
 
   function toggleTheme() {
     setDark((value) => {
@@ -87,7 +143,7 @@ function App() {
                 type="search"
                 placeholder="Buscar IA, cloud, JS..."
                 value={query}
-                onChange={(event) => setQuery(event.target.value)}
+                onChange={(event) => changeQuery(event.target.value)}
               />
               <kbd className="grid size-5 shrink-0 place-items-center rounded-[3px] border border-[#dbe4ef] font-mono text-[20px] text-[#64748b] dark:border-[#263449]">/</kbd>
             </label>
@@ -95,9 +151,9 @@ function App() {
 
           <div className="grid grid-cols-1 gap-9 sm:grid-cols-[minmax(0,1fr)_190px] sm:gap-[30px] lg:grid-cols-[minmax(0,1fr)_228px] lg:gap-[55px]">
             <div aria-live="polite">
-              {visiblePosts.map((post, index) => (
+              {paginatedPosts.map((post, index) => (
                 <article className="grid grid-cols-[24px_minmax(0,1fr)_25px] gap-[9px] border-t border-[#dbe4ef] py-[21px] dark:border-[#263449] sm:grid-cols-[34px_minmax(0,1fr)_30px] sm:gap-[15px] sm:py-6 sm:pb-[26px]" key={post.slug}>
-                  <div className="pt-[3px] font-mono text-[20px] text-[#aaa99f]">{String(index + 1).padStart(2, '0')}</div>
+                  <div className="pt-[3px] font-mono text-[20px] text-[#aaa99f]">{String((safePage - 1) * POSTS_PER_PAGE + index + 1).padStart(2, '0')}</div>
                   <div>
                     <div className="flex flex-wrap items-center gap-[9px] font-mono text-[20px] text-[#64748b]">
                       {post.date && <time dateTime={post.date}>{formatDate(post.date)}</time>}
@@ -114,7 +170,7 @@ function App() {
                           type="button"
                           className={`rounded-[3px] px-[9px] py-[5px] font-mono text-[9px] transition-colors ${activeTag === tag ? 'bg-[#2563eb] text-white dark:bg-[#60a5fa] dark:text-[#0b1220]' : 'bg-[#eff6ff] text-[#2563eb] hover:bg-[#2563eb] hover:text-white dark:bg-[#1e293b] dark:text-[#93c5fd] dark:hover:bg-[#60a5fa] dark:hover:text-[#0b1220]'}`}
                           key={tag}
-                          onClick={() => setActiveTag(activeTag === tag ? '' : tag)}
+                          onClick={() => changeTag(tag)}
                         >
                           {tag}
                         </button>
@@ -129,8 +185,42 @@ function App() {
                   <span className="font-mono text-[23px] text-[#06b6d4]">&lt;/&gt;</span>
                   <h3 className="my-3 font-serif text-[21px] font-medium">{posts.length === 0 ? 'La primera página está en blanco.' : 'No encontramos esa idea.'}</h3>
                   <p className="text-md text-[#64748b]">{posts.length === 0 ? 'Agrega un archivo .md dentro de la carpeta posts/ para publicar.' : 'Prueba con otra búsqueda o quita el filtro seleccionado.'}</p>
-                  {(query || activeTag) && <button className="mt-3 rounded border border-[#dbe4ef] px-3 py-2 text-[11px] text-[#2563eb] dark:border-[#263449] dark:text-[#60a5fa]" type="button" onClick={() => { setQuery(''); setActiveTag('') }}>Limpiar filtros</button>}
+                  {(query || activeTag) && <button className="mt-3 rounded border border-[#dbe4ef] px-3 py-2 text-[11px] text-[#2563eb] dark:border-[#263449] dark:text-[#60a5fa]" type="button" onClick={clearFilters}>Limpiar filtros</button>}
                 </div>
+              )}
+              {visiblePosts.length > 0 && totalPages > 1 && (
+                <nav className="mt-2 flex items-center justify-center gap-2 border-t border-[#dbe4ef] pt-6 dark:border-[#263449]" aria-label="Paginación de artículos">
+                  <button
+                    type="button"
+                    className="grid h-9 min-w-9 place-items-center rounded border border-[#dbe4ef] px-2 text-[11px] text-[#64748b] transition-colors enabled:hover:border-[#2563eb] enabled:hover:text-[#2563eb] disabled:cursor-not-allowed disabled:opacity-40 dark:border-[#263449] dark:enabled:hover:border-[#60a5fa] dark:enabled:hover:text-[#60a5fa]"
+                    onClick={() => changePage(safePage - 1)}
+                    disabled={safePage === 1}
+                    aria-label="Página anterior"
+                  >
+                    ←
+                  </button>
+                  {Array.from({ length: totalPages }, (_, index) => index + 1).map((page) => (
+                    <button
+                      type="button"
+                      className={`grid size-9 place-items-center rounded border text-[11px] transition-colors ${page === safePage ? 'border-[#2563eb] bg-[#2563eb] text-white dark:border-[#60a5fa] dark:bg-[#60a5fa] dark:text-[#0b1220]' : 'border-[#dbe4ef] text-[#64748b] hover:border-[#2563eb] hover:text-[#2563eb] dark:border-[#263449] dark:hover:border-[#60a5fa] dark:hover:text-[#60a5fa]'}`}
+                      key={page}
+                      onClick={() => changePage(page)}
+                      aria-current={page === safePage ? 'page' : undefined}
+                      aria-label={`Ir a la página ${page}`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                  <button
+                    type="button"
+                    className="grid h-9 min-w-9 place-items-center rounded border border-[#dbe4ef] px-2 text-[11px] text-[#64748b] transition-colors enabled:hover:border-[#2563eb] enabled:hover:text-[#2563eb] disabled:cursor-not-allowed disabled:opacity-40 dark:border-[#263449] dark:enabled:hover:border-[#60a5fa] dark:enabled:hover:text-[#60a5fa]"
+                    onClick={() => changePage(safePage + 1)}
+                    disabled={safePage === totalPages}
+                    aria-label="Página siguiente"
+                  >
+                    →
+                  </button>
+                </nav>
               )}
             </div>
 
@@ -151,7 +241,7 @@ function App() {
                         className={`flex w-full justify-between border-b border-[#dbe4ef] bg-transparent py-[9px] text-left text-[11px] transition-colors dark:border-[#263449] ${activeTag === tag ? 'text-[#2563eb] dark:text-[#60a5fa]' : 'text-[#64748b] hover:text-[#2563eb] dark:hover:text-[#60a5fa]'}`}
                         key={tag}
                         type="button"
-                        onClick={() => setActiveTag(activeTag === tag ? '' : tag)}
+                        onClick={() => changeTag(tag)}
                       >
                         <span>{tag}</span><span className="font-mono text-[20px] text-[#aaa99f]">{posts.filter((post) => post.tags.includes(tag)).length}</span>
                       </button>

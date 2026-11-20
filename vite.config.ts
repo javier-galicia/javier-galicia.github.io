@@ -259,11 +259,15 @@ function blogPlugin(): Plugin {
         }
 
         const base = config.base.endsWith('/') ? config.base : `${config.base}/`
+        const posts = readPosts(postsDirectory)
+        const postIndex = posts.findIndex((item) => item.slug === match[1])
         const page = renderStaticPostTemplate(
           post,
           [`${base}src/index.css`],
           base,
           siteUrl,
+          posts[postIndex + 1],
+          posts[postIndex - 1],
         )
         response.statusCode = 200
         response.setHeader('Content-Type', 'text/html; charset=utf-8')
@@ -320,10 +324,18 @@ function blogPlugin(): Plugin {
       }
 
       for (const post of posts) {
+        const postIndex = posts.findIndex((item) => item.slug === post.slug)
         this.emitFile({
           type: 'asset',
           fileName: `posts/${post.slug}/index.html`,
-          source: renderStaticPostTemplate(post, cssHrefs, homeHref, siteUrl),
+          source: renderStaticPostTemplate(
+            post,
+            cssHrefs,
+            homeHref,
+            siteUrl,
+            posts[postIndex + 1],
+            posts[postIndex - 1],
+          ),
         })
       }
     },

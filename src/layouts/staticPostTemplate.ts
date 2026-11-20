@@ -39,6 +39,8 @@ export function renderStaticPostTemplate(
   cssHrefs: string[],
   homeHref: string,
   siteUrl: string,
+  previousPost?: StaticPostTemplateData,
+  nextPost?: StaticPostTemplateData,
 ) {
   const postDate = post.date
     ? `<time datetime="${escapeHtml(post.date)}">${escapeHtml(formatDate(post.date))}</time><span class="meta-dot">·</span>`
@@ -68,6 +70,11 @@ export function renderStaticPostTemplate(
   const gitHubLink = blogConfig.githubUrl
     ? `<a class="hidden text-inherit no-underline transition-colors hover:text-[#2563eb] sm:inline" href="${escapeHtml(blogConfig.githubUrl)}" target="_blank" rel="noreferrer">GitHub ↗</a>`
     : ''
+  const postNavigation = `
+        <nav class="mt-[45px] grid grid-cols-1 gap-3 border-t border-[#dbe4ef] pt-6 dark:border-[#263449] sm:grid-cols-2" aria-label="Navegación entre artículos">
+          ${previousPost ? `<a class="group flex min-h-[88px] flex-col justify-center rounded-lg border border-[#dbe4ef] px-5 py-4 text-inherit no-underline transition hover:border-[#2563eb] dark:border-[#263449] dark:hover:border-[#60a5fa]" href="${escapeHtml(homeHref)}posts/${escapeHtml(previousPost.slug)}/"><span class="mb-2 font-mono text-[20px] text-[#64748b] dark:text-[#94a3b8]">← Anterior</span><span class="font-serif text-[17px] font-medium leading-[1.35] group-hover:text-[#2563eb] dark:group-hover:text-[#60a5fa]">${escapeHtml(previousPost.title)}</span></a>` : '<span></span>'}
+          ${nextPost ? `<a class="group flex min-h-[88px] flex-col justify-center rounded-lg border border-[#dbe4ef] px-5 py-4 text-right text-inherit no-underline transition hover:border-[#2563eb] dark:border-[#263449] dark:hover:border-[#60a5fa]" href="${escapeHtml(homeHref)}posts/${escapeHtml(nextPost.slug)}/"><span class="mb-2 font-mono text-[20px] text-[#64748b] dark:text-[#94a3b8]">Siguiente →</span><span class="font-serif text-[17px] font-medium leading-[1.35] group-hover:text-[#2563eb] dark:group-hover:text-[#60a5fa]">${escapeHtml(nextPost.title)}</span></a>` : ''}
+        </nav>`
 
   return `<!doctype html>
 <html lang="es">
@@ -109,6 +116,7 @@ export function renderStaticPostTemplate(
           </header>
           <div class="prose pt-[30px]">${post.html}</div>
         </article>
+${postNavigation}
         <footer class="mt-[45px] border-t border-[#dbe4ef] pt-[18px] text-[11px] text-[#64748b] dark:border-[#263449] dark:text-[#94a3b8]">Escrito por ${escapeHtml(blogConfig.author)} · <a class="text-[#2563eb] dark:text-[#60a5fa]" href="${escapeHtml(homeHref)}">${escapeHtml(blogConfig.title)}</a></footer>
       </main>
     </div>
